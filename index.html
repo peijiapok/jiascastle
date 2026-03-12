@@ -100,22 +100,69 @@
 </div>
 
 <script>
-    window.onload = function() {
-        generateCalendar();
-        loadAllData();
-    };
+function generateCalendar() {
+    const months = [
+        { name: "August 2025", year: 2025, monthIndex: 7 },
+        { name: "September 2025", year: 2025, monthIndex: 8 },
+        { name: "October 2025", year: 2025, monthIndex: 9 },
+        { name: "November 2025", year: 2025, monthIndex: 10 },
+        { name: "December 2025", year: 2025, monthIndex: 11 },
+        { name: "January 2026", year: 2026, monthIndex: 0 },
+        { name: "February 2026", year: 2026, monthIndex: 1 },
+        { name: "March 2026", year: 2026, monthIndex: 2 },
+        { name: "April 2026", year: 2026, monthIndex: 3 },
+        { name: "May 2026", year: 2026, monthIndex: 4 },
+        { name: "June 2026", year: 2026, monthIndex: 5 },
+        { name: "July 2026", year: 2026, monthIndex: 6 },
+        { name: "August 2026", year: 2026, monthIndex: 7 },
+        { name: "September 2026", year: 2026, monthIndex: 8 },
+        { name: "October 2026", year: 2026, monthIndex: 9 },
+        { name: "November 2026", year: 2026, monthIndex: 10 },
+        { name: "December 2026", year: 2026, monthIndex: 11 }
+    ];
 
-    function generateCalendar() {
-        const months = ["August 2025", "September 2025", "October 2025", "November 2025", "December 2025", "January 2026", "February 2026", "March 2026", "April 2026", "May 2026", "June 2026", "July 2026", "August 2026", "September 2026", "October 2026", "November 2026", "December 2026"];
-        const cont = document.getElementById('calendarContainer');
-        cont.innerHTML = "";
-        months.forEach(m => {
-            let h = `<div style="background:var(--blue); padding:5px; border:2px solid black; border-radius:10px; text-align:center; margin-top:15px; font-weight:bold; font-size:0.8rem;">${m}</div>`;
-            h += `<div style="display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:0.5rem; font-weight:bold; margin:5px 0;"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div><div class="calendar-grid">`;
-            for(let i=1; i<=31; i++) h += `<div class="day" ondrop="drop(event)" ondragover="allowDrop(event)"><strong>${i}</strong></div>`;
-            cont.innerHTML += h + `</div>`;
-        });
-    }
+    const cont = document.getElementById('calendarContainer');
+    cont.innerHTML = ""; 
+
+    months.forEach(m => {
+        let h = `<div style="background:var(--blue); padding:5px; border:2px solid black; border-radius:10px; text-align:center; margin-top:15px; font-weight:bold; font-size:0.8rem;">${m.name}</div>`;
+        h += `<div style="display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:0.5rem; font-weight:bold; margin:5px 0;">
+                <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+              </div>`;
+        h += `<div class="calendar-grid">`;
+
+        const firstDay = new Date(m.year, m.monthIndex, 1).getDay();
+        const daysInMonth = new Date(m.year, m.monthIndex + 1, 0).getDate();
+
+        // Fill empty slots before the 1st
+        for (let x = 0; x < firstDay; x++) {
+            h += `<div class="day" style="background:#f2f2f2; border-right:2px solid black; border-bottom:2px solid black;"></div>`;
+        }
+
+        // Generate the days
+        for (let i = 1; i <= daysInMonth; i++) {
+            let specialStyle = "";
+            let weddingLabel = "";
+
+            // Highlight Seoul Wedding: May 30, 2026
+            if (m.year === 2026 && m.monthIndex === 4 && i === 30) {
+                specialStyle = "background-color: var(--pink); border: 3px solid black; box-shadow: inset 0 0 10px rgba(0,0,0,0.1);";
+                weddingLabel = "<br><span style='font-size:0.5rem; color:red;'>🇰🇷 WEDDING</span>";
+            }
+            // Highlight KL Wedding: September 26, 2026
+            if (m.year === 2026 && m.monthIndex === 8 && i === 26) {
+                specialStyle = "background-color: var(--yellow); border: 3px solid black; box-shadow: inset 0 0 10px rgba(0,0,0,0.1);";
+                weddingLabel = "<br><span style='font-size:0.5rem; color:red;'>🇲🇾 WEDDING</span>";
+            }
+
+            h += `<div class="day" style="${specialStyle}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <strong>${i}</strong>${weddingLabel}
+                  </div>`;
+        }
+        
+        cont.innerHTML += h + `</div>`;
+    });
+}
 
     function showPage(pId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));

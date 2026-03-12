@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jia's Castle | Wedding & Content Planner</title>
+    <title>Jia's Castle | Planner & Guest List</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS VARIABLES & THEME --- */
         :root {
             --pink: #FFD1DC;
             --yellow: #FFF9C4;
@@ -15,150 +14,43 @@
             --black: #000000;
         }
 
-        body {
-            background-color: #f8f8f8;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .app-container {
-            max-width: 900px;
-            width: 100%;
-            background: var(--white);
-            border: 4px solid var(--black);
-            box-shadow: 12px 12px 0px var(--black); /* Neo-Brutalism Shadow */
-            padding: 30px;
-            border-radius: 20px;
-        }
-
-        /* --- HEADER & COUNTDOWNS --- */
-        header {
-            text-align: center;
-            border-bottom: 4px solid var(--black);
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            margin: 0;
-            font-style: italic;
-        }
-
-        .countdowns {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .countdown-item {
-            background: var(--white);
-            border: 2px solid var(--black);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        /* --- DRAGGABLE TOOLBOX --- */
-        .toolbox-container {
-            margin-bottom: 30px;
-        }
-
-        .toolbox-title {
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .toolbox {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 15px;
-            background: #fafafa;
-            border: 2px dashed var(--black);
-            border-radius: 15px;
-        }
-
-        .pill {
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 2px solid var(--black);
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: grab;
-            transition: transform 0.1s;
-            user-select: none;
-            display: inline-block;
-        }
-
-        .pill:active { transform: scale(0.95); cursor: grabbing; }
+        body { background-color: #f8f8f8; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-container { max-width: 900px; width: 100%; background: var(--white); border: 4px solid var(--black); box-shadow: 12px 12px 0px var(--black); padding: 30px; border-radius: 20px; }
         
-        /* Color Coding */
+        header { text-align: center; border-bottom: 4px solid var(--black); margin-bottom: 30px; padding-bottom: 20px; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0; font-style: italic; }
+
+        .countdowns { display: flex; justify-content: space-around; margin-top: 15px; gap: 10px; flex-wrap: wrap; }
+        .countdown-item { background: var(--white); border: 2px solid var(--black); padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: bold; }
+
+        /* Planner Toolbox */
+        .toolbox { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #fafafa; border: 2px dashed var(--black); border-radius: 15px; margin-bottom: 20px; }
+        .pill { padding: 8px 16px; border-radius: 30px; border: 2px solid var(--black); font-weight: 700; font-size: 0.8rem; cursor: grab; display: inline-block; }
         .p-pink { background-color: var(--pink); }
         .p-yellow { background-color: var(--yellow); }
         .p-blue { background-color: var(--blue); }
 
-        /* --- CALENDAR GRID --- */
-        .calendar-header-days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+        /* Calendar */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid var(--black); border-left: 2px solid var(--black); }
+        .day { min-height: 100px; background: var(--white); border-right: 2px solid var(--black); border-bottom: 2px solid var(--black); padding: 8px; }
+        .day-num { font-weight: 700; }
+        .day .pill { display: block; margin-bottom: 4px; font-size: 0.7rem; padding: 4px 8px; cursor: pointer; }
 
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 0;
-            border-top: 2px solid var(--black);
-            border-left: 2px solid var(--black);
-        }
+        /* Guest List Section */
+        .guest-section { margin-top: 40px; border-top: 4px solid var(--black); padding-top: 20px; }
+        .guest-input-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input, select, button { padding: 10px; border: 2px solid var(--black); border-radius: 8px; font-family: inherit; font-weight: bold; }
+        button { background: var(--yellow); cursor: pointer; transition: 0.2s; }
+        button:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--black); }
 
-        .day {
-            min-height: 110px;
-            background: var(--white);
-            border-right: 2px solid var(--black);
-            border-bottom: 2px solid var(--black);
-            padding: 8px;
-            position: relative;
-        }
-
-        .day:hover { background-color: #fffdf0; }
-
-        .day-num {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        /* When an item is dropped into a day */
-        .day .pill {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        @media (max-width: 600px) {
-            .calendar-grid { grid-template-columns: repeat(3, 1fr); }
-            .calendar-header-days { display: none; }
-        }
+        .guest-lists-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .guest-card { background: #fff; border: 2px solid var(--black); padding: 15px; border-radius: 15px; }
+        .guest-card.korea { background-color: var(--blue); }
+        .guest-card.kl { background-color: var(--pink); }
+        .guest-card h3 { margin-top: 0; font-family: 'Playfair Display', serif; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-between; }
+        .delete-btn { color: red; cursor: pointer; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -167,103 +59,91 @@
     <header>
         <h1>Jia's Castle</h1>
         <div class="countdowns">
-            <div class="countdown-item" id="countdown-korea">Loading Korea Wedding...</div>
-            <div class="countdown-item" id="countdown-kl">Loading KL Wedding...</div>
+            <div class="countdown-item" id="countdown-korea">...</div>
+            <div class="countdown-item" id="countdown-kl">...</div>
         </div>
     </header>
 
-    <div class="toolbox-container">
-        <span class="toolbox-title">Planner Toolbox (Drag items onto the calendar)</span>
-        <div class="toolbox" id="toolbox">
-            <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="film">🎬 Film Content</div>
-            <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="edit">✂️ Edit Video</div>
-            <div class="pill p-yellow" draggable="true" ondragstart="drag(event)" id="socials">📱 Post XHS/IG</div>
-            
-            <div class="pill p-blue" draggable="true" ondragstart="drag(event)" id="gown">👗 Gown Tour</div>
-            <div class="pill p-blue" draggable="true" ondragstart="drag(event)" id="makeup">💄 Makeup Trial</div>
-            <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="taste">🥘 Taste Test</div>
-            <div class="pill p-blue" draggable="true" ondragstart="drag(event)" id="guest">✉️ Guest RSVP</div>
-            
-            <div class="pill p-yellow" draggable="true" ondragstart="drag(event)" id="book" data-custom="true">📂 Book...</div>
-        </div>
-    </div>
-
-    <div class="calendar-header-days">
-        <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+    <div class="toolbox" id="toolbox">
+        <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="film">🎬 Film</div>
+        <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="edit">✂️ Edit</div>
+        <div class="pill p-yellow" draggable="true" ondragstart="drag(event)" id="socials">📱 Post</div>
+        <div class="pill p-blue" draggable="true" ondragstart="drag(event)" id="gown">👗 Gown</div>
+        <div class="pill p-yellow" draggable="true" ondragstart="drag(event)" id="book" data-custom="true">📂 Book...</div>
     </div>
     
-    <div class="calendar-grid" id="calendarGrid">
+    <div class="calendar-grid" id="calendarGrid"></div>
+
+    <section class="guest-section">
+        <h2>Guest List Manager</h2>
+        <div class="guest-input-group">
+            <input type="text" id="guestName" placeholder="Guest Name">
+            <select id="weddingLocation">
+                <option value="korea">Korea Wedding (May)</option>
+                <option value="kl">KL Wedding (Sept)</option>
+            </select>
+            <button onclick="addGuest()">Add to List</button>
         </div>
+
+        <div class="guest-lists-container">
+            <div class="guest-card korea">
+                <h3>Korea Guest List</h3>
+                <ul id="list-korea"></ul>
+            </div>
+            <div class="guest-card kl">
+                <h3>KL Guest List</h3>
+                <ul id="list-kl"></ul>
+            </div>
+        </div>
+    </section>
 </div>
 
 <script>
-    // --- SETTINGS ---
+    // Countdowns
     const koreaDate = new Date("May 30, 2026 00:00:00").getTime();
     const klDate = new Date("September 26, 2026 00:00:00").getTime();
 
-    // --- COUNTDOWN LOGIC ---
     function updateCountdowns() {
         const now = new Date().getTime();
-        
-        function calculate(target, elementId, name) {
-            const dist = target - now;
-            const days = Math.floor(dist / (1000 * 60 * 60 * 24));
-            document.getElementById(elementId).innerHTML = `<strong>${days} Days</strong> to ${name}`;
-        }
-
-        calculate(koreaDate, "countdown-korea", "Korea Wedding");
-        calculate(klDate, "countdown-kl", "KL Wedding");
+        document.getElementById("countdown-korea").innerHTML = `<strong>${Math.floor((koreaDate - now) / (1000 * 60 * 60 * 24))} Days</strong> to Korea`;
+        document.getElementById("countdown-kl").innerHTML = `<strong>${Math.floor((klDate - now) / (1000 * 60 * 60 * 24))} Days</strong> to KL`;
     }
     setInterval(updateCountdowns, 1000);
     updateCountdowns();
 
-    // --- GENERATE CALENDAR ---
-    // Simple logic to show 31 days (for the current planning month)
+    // Calendar Generation
     const grid = document.getElementById('calendarGrid');
     for (let i = 1; i <= 31; i++) {
-        const daySquare = document.createElement('div');
-        daySquare.className = 'day';
-        daySquare.setAttribute('ondrop', 'drop(event)');
-        daySquare.setAttribute('ondragover', 'allowDrop(event)');
-        daySquare.innerHTML = `<span class="day-num">${i}</span>`;
-        grid.appendChild(daySquare);
+        grid.innerHTML += `<div class="day" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="day-num">${i}</span></div>`;
     }
 
-    // --- DRAG AND DROP LOGIC ---
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
-
+    // Drag & Drop
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
     function drop(ev) {
         ev.preventDefault();
         const data = ev.dataTransfer.getData("text");
-        const originalPill = document.getElementById(data);
-        
-        // Create a copy of the pill
-        const nodeCopy = originalPill.cloneNode(true);
-        nodeCopy.id = "dropped-" + Math.random(); // unique id
-        
-        // If it's the "Book" pill, prompt for custom text
-        if (originalPill.getAttribute('data-custom') === "true") {
-            const label = prompt("What are you booking?", "Photographer");
-            if (label) {
-                nodeCopy.innerText = "📂 " + label;
-            } else {
-                return; // Cancel if no label
-            }
+        const nodeCopy = document.getElementById(data).cloneNode(true);
+        nodeCopy.id = "new-" + Math.random();
+        if (nodeCopy.getAttribute('data-custom')) {
+            const label = prompt("What are you booking?");
+            if (label) nodeCopy.innerText = "📂 " + label;
         }
-
-        // Add a delete feature on double click
-        nodeCopy.title = "Double click to remove";
         nodeCopy.ondblclick = function() { this.remove(); };
-
         ev.currentTarget.appendChild(nodeCopy);
     }
-</script>
 
+    // Guest List Logic
+    function addGuest() {
+        const name = document.getElementById('guestName').value;
+        const loc = document.getElementById('weddingLocation').value;
+        if (!name) return;
+
+        const li = document.createElement('li');
+        li.innerHTML = `${name} <span class="delete-btn" onclick="this.parentElement.remove()">remove</span>`;
+        document.getElementById(`list-${loc}`).appendChild(li);
+        document.getElementById('guestName').value = "";
+    }
+</script>
 </body>
 </html>

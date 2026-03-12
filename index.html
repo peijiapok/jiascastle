@@ -22,6 +22,7 @@
         .nav-card img { width: 100%; display: block; border-radius: 15px; }
 
         /* Calendar */
+        
         .toolbox { display: flex; flex-wrap: wrap; gap: 5px; background: #fafafa; padding: 12px; border: 3px solid black; border-radius: 15px; margin-bottom: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 4px 4px 0px black; }
         .pill { padding: 4px 8px; border-radius: 10px; border: 2px solid black; font-weight: bold; font-size: 0.55rem; cursor: grab; background: white; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid black; border-left: 2px solid black; }
@@ -55,6 +56,20 @@
     </div>
 
     <div id="calendarPage" class="page">
+        <div class="custom-pill-creator" style="background: #fafafa; border: 2px dashed black; padding: 10px; border-radius: 15px; margin-bottom: 15px;">
+    <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+        <input type="text" id="newPillText" class="input-box" placeholder="New task (e.g. Cake Pickup)" style="flex: 1;">
+        <button onclick="createNewPill()" style="padding: 5px 15px; border: 2px solid black; border-radius: 10px; background: var(--blue); font-weight: bold; cursor: pointer;">+</button>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center; font-size: 0.8rem; font-weight: bold;">
+        <span>Color:</span>
+        <div onclick="selectColor('var(--pink)')" style="width:20px; height:20px; border-radius:50%; border:1px solid black; cursor:pointer; background:var(--pink)"></div>
+        <div onclick="selectColor('var(--yellow)')" style="width:20px; height:20px; border-radius:50%; border:1px solid black; cursor:pointer; background:var(--yellow)"></div>
+        <div onclick="selectColor('var(--blue)')" style="width:20px; height:20px; border-radius:50%; border:1px solid black; cursor:pointer; background:var(--blue)"></div>
+        <div onclick="selectColor('var(--green)')" style="width:20px; height:20px; border-radius:50%; border:1px solid black; cursor:pointer; background:var(--green)"></div>
+        <div onclick="selectColor('var(--cream)')" style="width:20px; height:20px; border-radius:50%; border:1px solid black; cursor:pointer; background:var(--cream)"></div>
+    </div>
+</div>
         <div class="toolbox">
             <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="c1">💍 Marriage Reg</div>
             <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="c2">💐 Bouquet</div>
@@ -172,6 +187,36 @@
         const b = parseFloat(document.getElementById('budgetIn').value) || 0;
         document.getElementById('budgetBal').innerText = (b - total).toLocaleString();
     }
+    let selectedPillColor = 'white'; // Default color
+
+function selectColor(color) {
+    selectedPillColor = color;
+    // Visually show the selected color in the input box
+    document.getElementById('newPillText').style.border = '3px solid ' + color;
+}
+
+function createNewPill() {
+    const text = document.getElementById('newPillText').value;
+    if (!text) return;
+
+    const newPill = document.createElement('div');
+    newPill.className = 'pill';
+    newPill.style.backgroundColor = selectedPillColor;
+    newPill.draggable = true;
+    newPill.id = 'custom-' + Date.now(); // Unique ID
+    newPill.innerText = text;
+    
+    // Attach the drag event
+    newPill.ondragstart = drag;
+
+    // Add it to the top of your existing toolbox
+    // Ensure your toolbox has id="pillToolbox" or change the line below to match your toolbox class/id
+    document.querySelector('.toolbox').prepend(newPill);
+    
+    // Reset input
+    document.getElementById('newPillText').value = "";
+    document.getElementById('newPillText').style.border = '2px solid black';
+}
 </script>
 </body>
 </html>

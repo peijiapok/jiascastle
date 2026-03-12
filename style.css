@@ -1,0 +1,92 @@
+:root {
+    --pink: #FFD1DC;
+    --yellow: #FFF9C4;
+    --blue: #B3E5FC;
+    --bg: #FFFFFF;
+    --text: #4A4A4A;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.app-container {
+    max-width: 400px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    font-style: italic;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03); /* Very soft shadow */
+}
+
+/* Color Coding your Sections */
+.countdown-card { background-color: var(--yellow); text-align: center; }
+.checklist-card { border: 2px solid var(--pink); }
+.calendar-card { border: 2px solid var(--blue); }
+
+#countdown {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+#countdown small {
+    font-size: 0.8rem;
+    margin-right: 10px;
+    font-weight: normal;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checklist {
+    list-style: none;
+    padding: 0;
+}
+
+.checklist li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Customizing the checkbox to be pink */
+input[type="checkbox"] {
+    accent-color: var(--pink);
+    width: 18px;
+    height: 18px;
+}

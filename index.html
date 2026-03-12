@@ -31,7 +31,18 @@
 
 <div class="app-container">
     <div id="backNav" class="back-btn" onclick="showPage('home')">← Dashboard</div>
-    <header id="mainHeader"><img src="main-logo.jpeg" class="main-hero"></header>
+    <header id="mainHeader"><img src="main-logo.jpeg" class="main-hero">
+        <div style="display: flex; justify-content: space-around; background: var(--white); border: 3px solid var(--black); border-radius: 15px; padding: 10px; margin: 15px 0; font-weight: bold; box-shadow: 5px 5px 0px var(--black);">
+    <div style="text-align: center;">
+        <div style="font-size: 0.7rem;">🇰🇷 SEOUL</div>
+        <div id="seoulCD" style="font-size: 1.2rem; color: #ff6b6b;">--</div>
+    </div>
+    <div style="border-left: 2px solid black;"></div>
+    <div style="text-align: center;">
+        <div style="font-size: 0.7rem;">🇲🇾 KL</div>
+        <div id="klCD" style="font-size: 1.2rem; color: #4dadff;">--</div>
+    </div>
+</div></header>
 
     <div id="homePage" class="page active-page">
         <div class="dashboard-grid">
@@ -104,10 +115,27 @@
 
     // This is the trigger that makes sure the calendar appears!
     window.onload = function() {
-        generateCalendar();
-        loadAllData();
-    };
+    generateCalendar();
+    loadAllData();
+    startCountdowns(); // Add this line!
+};
 
+function startCountdowns() {
+    const seoulDate = new Date("May 30, 2026 00:00:00").getTime();
+    const klDate = new Date("September 26, 2026 00:00:00").getTime();
+
+    setInterval(function() {
+        const now = new Date().getTime();
+        
+        const distS = seoulDate - now;
+        const daysS = Math.floor(distS / (1000 * 60 * 60 * 24));
+        document.getElementById("seoulCD").innerText = daysS + "d";
+
+        const distK = klDate - now;
+        const daysK = Math.floor(distK / (1000 * 60 * 60 * 24));
+        document.getElementById("klCD").innerText = daysK + "d";
+    }, 1000);
+}
     function generateCalendar() {
         const months = [
             { name: "August 2025", year: 2025, monthIndex: 7 },

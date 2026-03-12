@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jia's Castle | Master Planner</title>
+    <title>Jia's Castle</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --pink: #FFD1DC; --yellow: #FFF9C4; --blue: #B3E5FC; --black: #000000; --white: #FFFFFF; }
+        :root { --pink: #FFD1DC; --yellow: #FFF9C4; --blue: #B3E5FC; --black: #000000; --white: #FFFFFF; --cream: #F5E6CC; }
         body { font-family: 'Inter', sans-serif; background: #fdfdfd; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .app-container { max-width: 550px; width: 100%; background: var(--white); border: 4px solid var(--black); box-shadow: 10px 10px 0px var(--black); border-radius: 25px; padding: 20px; min-height: 95vh; }
         
@@ -16,25 +16,29 @@
         .page { display: none; }
         .active-page { display: block; }
 
-        /* Dashboard */
+        /* Dashboard Grid */
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .nav-card { background: white; border: 3px solid var(--black); border-radius: 20px; padding: 5px; cursor: pointer; transition: 0.2s; }
         .nav-card img { width: 100%; display: block; border-radius: 15px; }
 
-        /* Calendar */
-        .toolbox { display: flex; flex-wrap: wrap; gap: 8px; background: #fafafa; padding: 15px; border: 3px solid black; border-radius: 15px; margin-bottom: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 4px 4px 0px black; }
-        .pill { padding: 6px 12px; border-radius: 20px; border: 2px solid black; font-weight: bold; font-size: 0.7rem; cursor: grab; background: white; }
-        .month-title { font-family: 'Playfair Display', serif; background: var(--blue); padding: 8px; border: 2px solid black; border-radius: 12px; text-align: center; margin-bottom: 5px; margin-top: 20px; }
+        /* Calendar ToolBox */
+        .toolbox { display: flex; flex-wrap: wrap; gap: 6px; background: #fafafa; padding: 12px; border: 3px solid black; border-radius: 15px; margin-bottom: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 4px 4px 0px black; }
+        .pill { padding: 4px 10px; border-radius: 15px; border: 2px solid black; font-weight: bold; font-size: 0.65rem; cursor: grab; background: white; white-space: nowrap; }
+        .month-title { font-family: 'Playfair Display', serif; background: var(--blue); padding: 8px; border: 2px solid black; border-radius: 12px; text-align: center; margin-top: 20px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid black; border-left: 2px solid black; }
-        .day { min-height: 75px; border-right: 2px solid black; border-bottom: 2px solid black; padding: 4px; font-size: 0.7rem; background: white; }
-        .day .pill { display: block; margin-top: 3px; font-size: 0.6rem; padding: 2px; cursor: pointer; text-align: center; }
+        .day { min-height: 75px; border-right: 2px solid black; border-bottom: 2px solid black; padding: 4px; font-size: 0.65rem; background: white; vertical-align: top; }
+        .day .pill { display: block; margin-top: 3px; font-size: 0.55rem; cursor: pointer; text-align: center; padding: 1px; }
 
-        /* General UI */
+        /* General Inputs */
         .input-box { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid black; border-radius: 12px; font-family: inherit; font-weight: bold; box-sizing: border-box; }
-        .action-btn { background: var(--pink); cursor: pointer; font-weight: bold; }
+        .action-btn { background: var(--pink); cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .action-btn:hover { background: var(--yellow); }
         .item-card { background: #fff; border: 2px solid black; padding: 15px; border-radius: 15px; margin-bottom: 10px; position: relative; }
-        .tag { font-size: 0.65rem; padding: 2px 6px; border: 1px solid black; border-radius: 10px; margin-right: 4px; font-weight: bold; }
-        .status-check { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; margin-top: 5px; }
+        
+        /* Media Grids */
+        .media-list { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
+        .media-item img { width: 100%; border: 2px solid black; border-radius: 10px; display: block; }
+        .media-item iframe { width: 100%; height: 450px; border: 2px solid black; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -56,52 +60,52 @@
         </div>
     </div>
 
-    <div id="vendorsPage" class="page">
-        <input type="text" id="vName" class="input-box" placeholder="Vendor Name (e.g. MUA, Photographer)">
-        <input type="text" id="vLink" class="input-box" placeholder="Website/Instagram Link">
-        <button class="input-box action-btn" onclick="addVendor()">Add Vendor</button>
-        <div id="vendorList"></div>
-    </div>
-
-    <div id="moneyPage" class="page">
-        <input type="text" id="expName" class="input-box" placeholder="Item Name">
-        <input type="number" id="expAmt" class="input-box" placeholder="Amount">
-        <select id="expCur" class="input-box"><option value="KRW">₩ (Korea Wedding)</option><option value="MYR">RM (KL Wedding)</option></select>
-        <button class="input-box action-btn" style="background:var(--yellow)" onclick="addExpense()">Add Expense</button>
-        <div style="display:flex; justify-content: space-between; margin: 15px 0;">
-            <div class="tag" style="background:var(--blue); padding:10px;">KRW: ₩<span id="tKRW">0</span></div>
-            <div class="tag" style="background:var(--pink); padding:10px;">MYR: RM<span id="tMYR">0</span></div>
-        </div>
-        <div id="moneyList"></div>
-    </div>
-
     <div id="calendarPage" class="page">
         <div class="toolbox">
-            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="film">🎬 FILM</div>
-            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="edit">✂️ EDIT</div>
-            <div class="pill" style="background:var(--blue)" draggable="true" ondragstart="drag(event)" id="gown">👗 GOWN</div>
-            <div class="pill" style="background:var(--yellow)" draggable="true" ondragstart="drag(event)" id="book" data-custom="true">📂 BOOK</div>
+            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p1">💌 Invitation Gathering</div>
+            <div class="pill" style="background:var(--yellow)" draggable="true" ondragstart="drag(event)" id="p2">🍱 Taste Test</div>
+            <div class="pill" style="background:var(--blue)" draggable="true" ondragstart="drag(event)" id="p3">💄 Makeup Trial</div>
+            <div class="pill" style="background:var(--cream)" draggable="true" ondragstart="drag(event)" id="p4">💎 Shop Jewelry</div>
+            <div class="pill" style="background:var(--cream)" draggable="true" ondragstart="drag(event)" id="p5">👠 Shop Shoes</div>
+            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p6">🎬 Film</div>
+            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p7">✂️ Edit</div>
+            <div class="pill" style="background:var(--blue)" draggable="true" ondragstart="drag(event)" id="p8">👗 Gown Fitting</div>
         </div>
         <div id="calendarContainer" style="max-height: 60vh; overflow-y: auto;"></div>
     </div>
 
     <div id="creatorPage" class="page">
-        <input type="text" id="reelUrl" class="input-box" placeholder="Paste Instagram Reel Link">
-        <button class="input-box action-btn" onclick="addReel()">Add to Inspiration</button>
-        <div id="reelGallery"></div>
+        <select id="cStatus" class="input-box">
+            <option value="IDEA">💡 Pending Idea</option>
+            <option value="FILMING">🎬 Currently Filming</option>
+            <option value="EDITING">✂️ Editing</option>
+        </select>
+        <textarea id="cNote" class="input-box" rows="3" placeholder="Script idea or Reel link..."></textarea>
+        <button class="input-box action-btn" onclick="addCreatorNote()">Add Creator Task</button>
+        <div id="creatorList"></div>
     </div>
 
-    <div id="guestsPage" class="page">
-        <input type="text" id="gName" class="input-box" placeholder="Guest Name">
-        <select id="gLoc" class="input-box"><option value="Seoul">Seoul Wedding</option><option value="KL">KL Wedding</option></select>
-        <label><input type="checkbox" id="gTrans"> Needs Transport?</label>
-        <button class="input-box action-btn" onclick="addGuest()">Add Guest</button>
-        <div id="guestList"></div>
+    <div id="inspoPage" class="page">
+        <input type="text" id="inUrl" class="input-box" placeholder="Paste Image Link or Instagram URL">
+        <button class="input-box action-btn" onclick="saveMedia('in')">Save to Inspo</button>
+        <div id="inList" class="media-list"></div>
     </div>
 
-    <div id="inspoPage" class="page"><div id="inGrid"></div></div>
-    <div id="lookPage" class="page"><div id="loGrid"></div></div>
-    <div id="photosPage" class="page"><div id="phGrid"></div></div>
+    <div id="lookPage" class="page">
+        <input type="text" id="loUrl" class="input-box" placeholder="Paste Gown/Makeup Link">
+        <button class="input-box action-btn" onclick="saveMedia('lo')">Save to Lookbook</button>
+        <div id="loList" class="media-list"></div>
+    </div>
+
+    <div id="photosPage" class="page">
+        <input type="text" id="phUrl" class="input-box" placeholder="Paste Photo Link">
+        <button class="input-box action-btn" onclick="saveMedia('ph')">Save to Gallery</button>
+        <div id="phList" class="media-list"></div>
+    </div>
+
+    <div id="guestsPage" class="page"><h3>Guest Manager</h3><div id="guestList"></div></div>
+    <div id="moneyPage" class="page"><h3>Budget</h3><div id="moneyList"></div></div>
+    <div id="vendorsPage" class="page"><h3>Vendors</h3><div id="vendorList"></div></div>
 </div>
 
 <script>
@@ -113,61 +117,52 @@
         window.scrollTo(0,0);
     }
 
-    // Vendor Logic
-    function addVendor() {
-        const name = document.getElementById('vName').value;
-        const link = document.getElementById('vLink').value;
-        if(!name) return;
-        const div = document.createElement('div');
-        div.className = 'item-card';
-        div.innerHTML = `
-            <strong>${name}</strong><br><small>${link}</small>
-            <div class="status-check"><input type="checkbox"> Deposit Paid</div>
-            <div class="status-check"><input type="checkbox"> Final Balance Paid</div>
-        `;
-        document.getElementById('vendorList').prepend(div);
-        document.getElementById('vName').value = ""; document.getElementById('vLink').value = "";
-    }
-
-    // Money Logic
-    let kS = 0, mS = 0;
-    function addExpense() {
-        const n = document.getElementById('expName').value, a = parseFloat(document.getElementById('expAmt').value), c = document.getElementById('expCur').value;
-        if(!n || isNaN(a)) return;
-        if(c==='KRW') kS+=a; else mS+=a;
-        document.getElementById('tKRW').innerText = kS.toLocaleString();
-        document.getElementById('tMYR').innerText = mS.toLocaleString();
-        document.getElementById('moneyList').innerHTML += `<div class="item-card"><b>${n}</b>: ${c} ${a.toLocaleString()}</div>`;
-    }
-
-    // Calendar Logic
-    const mos = ["December 2025", "January 2026", "February 2026", "March 2026", "April 2026", "May 2026", "June 2026", "July 2026", "August 2026", "September 2026", "October 2026"];
-    mos.forEach(m => {
+    // CALENDAR GENERATION
+    const months = ["December 2025", "January 2026", "February 2026", "March 2026", "April 2026", "May 2026", "June 2026", "July 2026", "August 2026", "September 2026", "October 2026"];
+    months.forEach(m => {
         let h = `<div class="month-title">${m}</div><div class="calendar-grid">`;
         for(let i=1; i<=31; i++) h += `<div class="day" ondrop="drop(event)" ondragover="allowDrop(event)"><strong>${i}</strong></div>`;
         document.getElementById('calendarContainer').innerHTML += h + `</div>`;
     });
+
     function allowDrop(e) { e.preventDefault(); }
     function drag(e) { e.dataTransfer.setData("text", e.target.id); }
     function drop(e) {
         e.preventDefault();
         const data = e.dataTransfer.getData("text");
         const node = document.getElementById(data).cloneNode(true);
-        if(node.getAttribute('data-custom')) { let l = prompt("Book what?"); node.innerText = l ? l : "Booked"; }
         node.ondblclick = function() { this.remove(); };
         e.currentTarget.appendChild(node);
     }
 
-    function addReel() {
-        const u = document.getElementById('reelUrl').value;
-        if(!u) return;
-        document.getElementById('reelGallery').innerHTML += `<div style="margin-bottom:10px; border:3px solid black; border-radius:15px; overflow:hidden;"><iframe src="${u.split('?')[0]}embed/" width="100%" height="400" frameborder="0"></iframe></div>`;
+    // CREATOR LOGIC
+    function addCreatorNote() {
+        const s = document.getElementById('cStatus').value;
+        const n = document.getElementById('cNote').value;
+        if(!n) return;
+        const card = `<div class="item-card"><b>[${s}]</b><br>${n}</div>`;
+        document.getElementById('creatorList').innerHTML = card + document.getElementById('creatorList').innerHTML;
+        document.getElementById('cNote').value = "";
     }
 
-    function addGuest() {
-        const n = document.getElementById('gName').value, l = document.getElementById('gLoc').value, t = document.getElementById('gTrans').checked ? "🚗" : "";
-        document.getElementById('guestList').innerHTML += `<div class="item-card"><b>${n}</b> <span class="tag">${l}</span> ${t}</div>`;
+    // MEDIA SAVING LOGIC (For Inspo, Look, Photos)
+    function saveMedia(prefix) {
+        const url = document.getElementById(prefix + 'Url').value;
+        if(!url) return;
+        const container = document.getElementById(prefix + 'List');
+        let content = '';
+
+        if(url.includes('instagram.com')) {
+            const cleanUrl = url.split('?')[0] + "embed/";
+            content = `<div class="media-item"><iframe src="${cleanUrl}" frameborder="0"></iframe></div>`;
+        } else {
+            content = `<div class="media-item"><img src="${url}" onerror="this.src='https://via.placeholder.com/300?text=Link+Saved'"></div>`;
+        }
+        
+        container.innerHTML = content + container.innerHTML;
+        document.getElementById(prefix + 'Url').value = "";
     }
 </script>
+
 </body>
 </html>

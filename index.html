@@ -3,147 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jia's Castle | Planner & Guest List</title>
+    <title>Jia's Castle</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink: #FFD1DC;
-            --yellow: #FFF9C4;
-            --blue: #B3E5FC;
-            --white: #FFFFFF;
-            --black: #000000;
+            --pink: #FFD1DC; --yellow: #FFF9C4; --blue: #B3E5FC;
+            --black: #000000; --white: #FFFFFF; --cream: #F5E6CC;
         }
 
-        body { background-color: #f8f8f8; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { max-width: 900px; width: 100%; background: var(--white); border: 4px solid var(--black); box-shadow: 12px 12px 0px var(--black); padding: 30px; border-radius: 20px; }
+        body { font-family: 'Inter', sans-serif; background: #fdfdfd; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .app-container { max-width: 500px; width: 100%; background: var(--white); border: 4px solid var(--black); box-shadow: 10px 10px 0px var(--black); border-radius: 25px; padding: 20px; min-height: 95vh; overflow: hidden; position: relative; }
+
+        header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .dashboard-hero { width: 100%; max-width: 320px; display: block; margin: 0 auto 10px; border-radius: 15px; }
+        h1 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 2.2rem; margin: 0; }
         
-        header { text-align: center; border-bottom: 4px solid var(--black); margin-bottom: 30px; padding-bottom: 20px; }
-        h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0; font-style: italic; }
+        .back-btn { display: none; cursor: pointer; font-weight: bold; background: var(--yellow); padding: 8px 20px; border: 3px solid black; border-radius: 20px; margin-bottom: 15px; width: fit-content; position: relative; z-index: 1000; }
 
-        .countdowns { display: flex; justify-content: space-around; margin-top: 15px; gap: 10px; flex-wrap: wrap; }
-        .countdown-item { background: var(--white); border: 2px solid var(--black); padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: bold; }
+        .countdown-strip { background: var(--white); border: 3px solid var(--black); border-radius: 15px; padding: 10px; font-size: 0.8rem; font-weight: bold; text-align: center; margin-bottom: 15px; display: flex; justify-content: space-around; }
 
-        /* Planner Toolbox */
-        .toolbox { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #fafafa; border: 2px dashed var(--black); border-radius: 15px; margin-bottom: 20px; }
-        .pill { padding: 8px 16px; border-radius: 30px; border: 2px solid var(--black); font-weight: 700; font-size: 0.8rem; cursor: grab; display: inline-block; }
-        .p-pink { background-color: var(--pink); }
-        .p-yellow { background-color: var(--yellow); }
-        .p-blue { background-color: var(--blue); }
+        /* Dashboard Navigation Grid */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .nav-card { 
+            background: white; border: 3px solid var(--black); border-radius: 20px; padding: 5px; 
+            text-align: center; cursor: pointer; transition: 0.2s; overflow: hidden;
+        }
+        .nav-card:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0px var(--black); }
+        .nav-card img { width: 100%; display: block; }
 
-        /* Calendar */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid var(--black); border-left: 2px solid var(--black); }
-        .day { min-height: 100px; background: var(--white); border-right: 2px solid var(--black); border-bottom: 2px solid var(--black); padding: 8px; }
-        .day-num { font-weight: 700; }
-        .day .pill { display: block; margin-bottom: 4px; font-size: 0.7rem; padding: 4px 8px; cursor: pointer; }
+        /* Pages */
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Guest List Section */
-        .guest-section { margin-top: 40px; border-top: 4px solid var(--black); padding-top: 20px; }
-        .guest-input-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        input, select, button { padding: 10px; border: 2px solid var(--black); border-radius: 8px; font-family: inherit; font-weight: bold; }
-        button { background: var(--yellow); cursor: pointer; transition: 0.2s; }
-        button:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--black); }
+        /* Money Tracker Styles */
+        .budget-group { border: 3px solid black; border-radius: 15px; padding: 15px; margin-bottom: 20px; }
+        .korea-bg { background-color: var(--blue); }
+        .kl-bg { background-color: var(--pink); }
+        .budget-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
 
-        .guest-lists-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .guest-card { background: #fff; border: 2px solid var(--black); padding: 15px; border-radius: 15px; }
-        .guest-card.korea { background-color: var(--blue); }
-        .guest-card.kl { background-color: var(--pink); }
-        .guest-card h3 { margin-top: 0; font-family: 'Playfair Display', serif; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-between; }
-        .delete-btn { color: red; cursor: pointer; font-size: 0.8rem; }
+        /* Calendar Styling */
+        #calendarPage { max-height: 75vh; overflow-y: auto; }
+        .month-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; background: var(--yellow); padding: 8px; border: 3px solid black; border-radius: 10px; margin-bottom: 10px; text-align: center; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid black; border-left: 2px solid black; margin-bottom: 30px; }
+        .day { min-height: 60px; border-right: 2px solid black; border-bottom: 2px solid black; padding: 4px; font-size: 0.7rem; background: white; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <header>
-        <h1>Jia's Castle</h1>
-        <div class="countdowns">
-            <div class="countdown-item" id="countdown-korea">...</div>
-            <div class="countdown-item" id="countdown-kl">...</div>
+    <div id="backNav" class="back-btn" onclick="showPage('home')">← Dashboard</div>
+    
+    <header id="mainHeader">
+        <img src="jia_locked_in_castle.png" alt="Hero Logo" class="dashboard-hero">
+        <div class="countdown-strip">
+            <div>🇰🇷 <span id="daysKorea">--</span>d</div>
+            <div>🇲🇾 <span id="daysKL">--</span>d</div>
         </div>
     </header>
 
-    <div class="toolbox" id="toolbox">
-        <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="film">🎬 Film</div>
-        <div class="pill p-pink" draggable="true" ondragstart="drag(event)" id="edit">✂️ Edit</div>
-        <div class="pill p-yellow" draggable="true" ondragstart="drag(event)" id="socials">📱 Post</div>
-        <div class="pill p-blue" draggable="true" ondragstart="drag(event)" id="gown">👗 Gown</div>
-        <div class="pill p-yellow" draggable="true" ondragstart="drag(event)" id="book" data-custom="true">📂 Book...</div>
+    <div id="homePage" class="page active-page">
+        <div class="dashboard-grid">
+            <div class="nav-card" onclick="showPage('calendar')"><img src="icon-calender.png"></div>
+            <div class="nav-card" onclick="showPage('guests')"><img src="icon-guest.png"></div>
+            <div class="nav-card" onclick="showPage('inspo')"><img src="icon-inspo.png"></div>
+            <div class="nav-card" onclick="showPage('look')"><img src="icon-thelook.png"></div>
+            <div class="nav-card" onclick="showPage('vendors')"><img src="icon-vendors.png"></div>
+            <div class="nav-card" onclick="showPage('creator')"><img src="icon-creator.png"></div>
+            <div class="nav-card" onclick="showPage('money')"><img src="icon-money.png"></div>
+            <div class="nav-card" onclick="showPage('photos')"><img src="icon-photos.png"></div>
+        </div>
     </div>
-    
-    <div class="calendar-grid" id="calendarGrid"></div>
 
-    <section class="guest-section">
-        <h2>Guest List Manager</h2>
-        <div class="guest-input-group">
-            <input type="text" id="guestName" placeholder="Guest Name">
-            <select id="weddingLocation">
-                <option value="korea">Korea Wedding (May)</option>
-                <option value="kl">KL Wedding (Sept)</option>
-            </select>
-            <button onclick="addGuest()">Add to List</button>
-        </div>
+    <div id="calendarPage" class="page">
+        <div id="calendarContainer"></div>
+    </div>
 
-        <div class="guest-lists-container">
-            <div class="guest-card korea">
-                <h3>Korea Guest List</h3>
-                <ul id="list-korea"></ul>
-            </div>
-            <div class="guest-card kl">
-                <h3>KL Guest List</h3>
-                <ul id="list-kl"></ul>
-            </div>
+    <div id="moneyPage" class="page">
+        <div class="budget-group korea-bg">
+            <h3>🇰🇷 Korea Budget (KRW)</h3>
+            <div class="budget-row"><span>Venue Deposit</span> <span>₩1,500,000</span></div>
+            <div class="budget-row"><span>Gown Rental</span> <span>₩800,000</span></div>
         </div>
-    </section>
+        <div class="budget-group kl-bg">
+            <h3>🇲🇾 KL Budget (MYR)</h3>
+            <div class="budget-row"><span>Catering</span> <span>RM 5,000</span></div>
+            <div class="budget-row"><span>Photographer</span> <span>RM 2,500</span></div>
+        </div>
+    </div>
+
+    <div id="guestsPage" class="page"><h3>Guest List</h3></div>
+    <div id="inspoPage" class="page"><h3>Mood Board</h3></div>
+    <div id="lookPage" class="page"><h3>Gowns & Makeup</h3></div>
+    <div id="vendorsPage" class="page"><h3>Vendor Directory</h3></div>
+    <div id="creatorPage" class="page"><h3>Content Ideas</h3></div>
+    <div id="photosPage" class="page"><h3>Photo Gallery</h3></div>
 </div>
 
 <script>
-    // Countdowns
-    const koreaDate = new Date("May 30, 2026 00:00:00").getTime();
-    const klDate = new Date("September 26, 2026 00:00:00").getTime();
-
-    function updateCountdowns() {
-        const now = new Date().getTime();
-        document.getElementById("countdown-korea").innerHTML = `<strong>${Math.floor((koreaDate - now) / (1000 * 60 * 60 * 24))} Days</strong> to Korea`;
-        document.getElementById("countdown-kl").innerHTML = `<strong>${Math.floor((klDate - now) / (1000 * 60 * 60 * 24))} Days</strong> to KL`;
-    }
-    setInterval(updateCountdowns, 1000);
-    updateCountdowns();
-
-    // Calendar Generation
-    const grid = document.getElementById('calendarGrid');
-    for (let i = 1; i <= 31; i++) {
-        grid.innerHTML += `<div class="day" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="day-num">${i}</span></div>`;
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(pageId + 'Page').classList.add('active-page');
+        
+        const isHome = pageId === 'home';
+        document.getElementById('backNav').style.display = isHome ? 'none' : 'block';
+        document.getElementById('mainHeader').style.display = isHome ? 'block' : 'none';
+        window.scrollTo(0,0);
     }
 
-    // Drag & Drop
-    function allowDrop(ev) { ev.preventDefault(); }
-    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-    function drop(ev) {
-        ev.preventDefault();
-        const data = ev.dataTransfer.getData("text");
-        const nodeCopy = document.getElementById(data).cloneNode(true);
-        nodeCopy.id = "new-" + Math.random();
-        if (nodeCopy.getAttribute('data-custom')) {
-            const label = prompt("What are you booking?");
-            if (label) nodeCopy.innerText = "📂 " + label;
+    // Calendar Generation: Dec 2025 - Oct 2026
+    const months = [
+        { name: "December 2025", days: 31 }, { name: "January 2026", days: 31 },
+        { name: "February 2026", days: 28 }, { name: "March 2026", days: 31 },
+        { name: "April 2026", days: 30 }, { name: "May 2026", days: 31 },
+        { name: "June 2026", days: 30 }, { name: "July 2026", days: 31 },
+        { name: "August 2026", days: 31 }, { name: "September 2026", days: 30 },
+        { name: "October 2026", days: 31 }
+    ];
+
+    const container = document.getElementById('calendarContainer');
+    months.forEach(m => {
+        let html = `<div class="month-title">${m.name}</div><div class="calendar-grid">`;
+        for (let d = 1; d <= m.days; d++) {
+            html += `<div class="day"><strong>${d}</strong></div>`;
         }
-        nodeCopy.ondblclick = function() { this.remove(); };
-        ev.currentTarget.appendChild(nodeCopy);
-    }
+        html += `</div>`;
+        container.innerHTML += html;
+    });
 
-    // Guest List Logic
-    function addGuest() {
-        const name = document.getElementById('guestName').value;
-        const loc = document.getElementById('weddingLocation').value;
-        if (!name) return;
-
-        const li = document.createElement('li');
-        li.innerHTML = `${name} <span class="delete-btn" onclick="this.parentElement.remove()">remove</span>`;
-        document.getElementById(`list-${loc}`).appendChild(li);
-        document.getElementById('guestName').value = "";
-    }
+    // Countdown Logic
+    const kDate = new Date("May 30, 2026").getTime();
+    const klDate = new Date("September 26, 2026").getTime();
+    setInterval(() => {
+        const now = new Date().getTime();
+        document.getElementById('daysKorea').innerText = Math.floor((kDate - now)/(1000*60*60*24));
+        document.getElementById('daysKL').innerText = Math.floor((klDate - now)/(1000*60*60*24));
+    }, 1000);
 </script>
+
 </body>
 </html>

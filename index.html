@@ -12,33 +12,32 @@
         
         header { text-align: center; margin-bottom: 20px; }
         .dashboard-hero { width: 100%; max-width: 320px; margin: 0 auto 10px; display: block; }
-        .back-btn { display: none; cursor: pointer; font-weight: bold; background: var(--yellow); padding: 8px 15px; border: 3px solid black; border-radius: 20px; margin-bottom: 15px; width: fit-content; }
+        .back-btn { display: none; cursor: pointer; font-weight: bold; background: var(--yellow); padding: 8px 15px; border: 2px solid black; border-radius: 20px; margin-bottom: 15px; width: fit-content; }
         .page { display: none; }
         .active-page { display: block; }
 
-        /* Dashboard Grid */
+        /* Dashboard */
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .nav-card { background: white; border: 3px solid var(--black); border-radius: 20px; padding: 5px; cursor: pointer; transition: 0.2s; }
         .nav-card img { width: 100%; display: block; border-radius: 15px; }
 
-        /* Calendar ToolBox */
+        /* Calendar Styles */
         .toolbox { display: flex; flex-wrap: wrap; gap: 6px; background: #fafafa; padding: 12px; border: 3px solid black; border-radius: 15px; margin-bottom: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 4px 4px 0px black; }
-        .pill { padding: 4px 10px; border-radius: 15px; border: 2px solid black; font-weight: bold; font-size: 0.65rem; cursor: grab; background: white; white-space: nowrap; }
-        .month-title { font-family: 'Playfair Display', serif; background: var(--blue); padding: 8px; border: 2px solid black; border-radius: 12px; text-align: center; margin-top: 20px; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid black; border-left: 2px solid black; }
-        .day { min-height: 75px; border-right: 2px solid black; border-bottom: 2px solid black; padding: 4px; font-size: 0.65rem; background: white; vertical-align: top; }
-        .day .pill { display: block; margin-top: 3px; font-size: 0.55rem; cursor: pointer; text-align: center; padding: 1px; }
+        .pill { padding: 4px 10px; border-radius: 15px; border: 2px solid black; font-weight: bold; font-size: 0.65rem; cursor: grab; background: white; }
+        .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; font-size: 0.7rem; margin-bottom: 5px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid black; border-left: 2px solid black; margin-bottom: 20px;}
+        .day { min-height: 60px; border-right: 2px solid black; border-bottom: 2px solid black; padding: 4px; font-size: 0.65rem; }
 
-        /* General Inputs */
+        /* General UI */
         .input-box { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid black; border-radius: 12px; font-family: inherit; font-weight: bold; box-sizing: border-box; }
-        .action-btn { background: var(--pink); cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .action-btn { background: var(--pink); cursor: pointer; font-weight: bold; border: 2px solid black; border-radius: 12px; transition: 0.2s; }
         .action-btn:hover { background: var(--yellow); }
-        .item-card { background: #fff; border: 2px solid black; padding: 15px; border-radius: 15px; margin-bottom: 10px; position: relative; }
-        
-        /* Media Grids */
-        .media-list { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
-        .media-item img { width: 100%; border: 2px solid black; border-radius: 10px; display: block; }
-        .media-item iframe { width: 100%; height: 450px; border: 2px solid black; border-radius: 10px; }
+        .item-card { background: #fff; border: 2px solid black; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .tag { font-size: 0.65rem; padding: 2px 6px; border: 1px solid black; border-radius: 10px; margin-right: 4px; font-weight: bold; background: var(--yellow); }
+
+        /* Table Map Specifics */
+        .table-cluster { border: 2px dashed black; border-radius: 15px; padding: 10px; margin-top: 15px; background: #fafafa; }
+        .table-title { font-weight: bold; text-decoration: underline; margin-bottom: 5px; display: block; }
     </style>
 </head>
 <body>
@@ -60,52 +59,50 @@
         </div>
     </div>
 
+    <div id="guestsPage" class="page">
+        <h3>Add Guest</h3>
+        <input type="text" id="gName" class="input-box" placeholder="Guest Name">
+        <select id="gLoc" class="input-box">
+            <option value="Seoul">Seoul Wedding</option>
+            <option value="KL">KL Wedding</option>
+        </select>
+        <input type="text" id="gTable" class="input-box" placeholder="Table No./Name (e.g. Table 1)">
+        <button class="input-box action-btn" onclick="addGuest()">Add to Map</button>
+        
+        <h3 style="margin-top: 30px;">KL Table Map</h3>
+        <div id="tableMapContainer"></div>
+    </div>
+
     <div id="calendarPage" class="page">
         <div class="toolbox">
-            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p1">💌 Invitation Gathering</div>
-            <div class="pill" style="background:var(--yellow)" draggable="true" ondragstart="drag(event)" id="p2">🍱 Taste Test</div>
-            <div class="pill" style="background:var(--blue)" draggable="true" ondragstart="drag(event)" id="p3">💄 Makeup Trial</div>
-            <div class="pill" style="background:var(--cream)" draggable="true" ondragstart="drag(event)" id="p4">💎 Shop Jewelry</div>
-            <div class="pill" style="background:var(--cream)" draggable="true" ondragstart="drag(event)" id="p5">👠 Shop Shoes</div>
+            <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p1">💌 Invite</div>
+            <div class="pill" style="background:var(--yellow)" draggable="true" ondragstart="drag(event)" id="p2">🍱 Taste</div>
+            <div class="pill" style="background:var(--blue)" draggable="true" ondragstart="drag(event)" id="p3">💄 Makeup</div>
             <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p6">🎬 Film</div>
             <div class="pill" style="background:var(--pink)" draggable="true" ondragstart="drag(event)" id="p7">✂️ Edit</div>
-            <div class="pill" style="background:var(--blue)" draggable="true" ondragstart="drag(event)" id="p8">👗 Gown Fitting</div>
         </div>
         <div id="calendarContainer" style="max-height: 60vh; overflow-y: auto;"></div>
     </div>
 
+    <div id="moneyPage" class="page">
+        <input type="text" id="mName" class="input-box" placeholder="Expense">
+        <input type="number" id="mAmt" class="input-box" placeholder="Amount">
+        <select id="mCur" class="input-box"><option value="KRW">₩ (Seoul)</option><option value="MYR">RM (KL)</option></select>
+        <button class="input-box action-btn" onclick="addExpense()">Save Expense</button>
+        <div id="moneyList"></div>
+    </div>
+
     <div id="creatorPage" class="page">
-        <select id="cStatus" class="input-box">
-            <option value="IDEA">💡 Pending Idea</option>
-            <option value="FILMING">🎬 Currently Filming</option>
-            <option value="EDITING">✂️ Editing</option>
-        </select>
-        <textarea id="cNote" class="input-box" rows="3" placeholder="Script idea or Reel link..."></textarea>
-        <button class="input-box action-btn" onclick="addCreatorNote()">Add Creator Task</button>
-        <div id="creatorList"></div>
+        <textarea id="cNote" class="input-box" rows="2" placeholder="Video idea..."></textarea>
+        <input type="text" id="cReel" class="input-box" placeholder="IG Reel URL">
+        <button class="input-box action-btn" onclick="addCreatorItem()">Add Creator Item</button>
+        <div id="creatorList" style="margin-top: 20px;"></div>
     </div>
 
-    <div id="inspoPage" class="page">
-        <input type="text" id="inUrl" class="input-box" placeholder="Paste Image Link or Instagram URL">
-        <button class="input-box action-btn" onclick="saveMedia('in')">Save to Inspo</button>
-        <div id="inList" class="media-list"></div>
-    </div>
-
-    <div id="lookPage" class="page">
-        <input type="text" id="loUrl" class="input-box" placeholder="Paste Gown/Makeup Link">
-        <button class="input-box action-btn" onclick="saveMedia('lo')">Save to Lookbook</button>
-        <div id="loList" class="media-list"></div>
-    </div>
-
-    <div id="photosPage" class="page">
-        <input type="text" id="phUrl" class="input-box" placeholder="Paste Photo Link">
-        <button class="input-box action-btn" onclick="saveMedia('ph')">Save to Gallery</button>
-        <div id="phList" class="media-list"></div>
-    </div>
-
-    <div id="guestsPage" class="page"><h3>Guest Manager</h3><div id="guestList"></div></div>
-    <div id="moneyPage" class="page"><h3>Budget</h3><div id="moneyList"></div></div>
-    <div id="vendorsPage" class="page"><h3>Vendors</h3><div id="vendorList"></div></div>
+    <div id="vendorsPage" class="page"><input type="text" id="vN" class="input-box" placeholder="Vendor"><button onclick="addV()" class="input-box action-btn">Add</button><div id="vList"></div></div>
+    <div id="inspoPage" class="page"><input type="text" id="iU" class="input-box" placeholder="Link"><button onclick="addM('i')" class="input-box action-btn">Add</button><div id="iList"></div></div>
+    <div id="lookPage" class="page"><input type="text" id="lU" class="input-box" placeholder="Link"><button onclick="addM('l')" class="input-box action-btn">Add</button><div id="lList"></div></div>
+    <div id="photosPage" class="page"><input type="text" id="pU" class="input-box" placeholder="Link"><button onclick="addM('p')" class="input-box action-btn">Add</button><div id="pList"></div></div>
 </div>
 
 <script>
@@ -114,13 +111,36 @@
         document.getElementById(pId + 'Page').classList.add('active-page');
         document.getElementById('backNav').style.display = pId==='home' ? 'none' : 'block';
         document.getElementById('mainHeader').style.display = pId==='home' ? 'block' : 'none';
-        window.scrollTo(0,0);
+    }
+
+    // GUEST & TABLE LOGIC
+    function addGuest() {
+        const name = document.getElementById('gName').value;
+        const loc = document.getElementById('gLoc').value;
+        const tableName = document.getElementById('gTable').value || "Unassigned";
+        if(!name) return;
+
+        let tableDiv = document.getElementById('table-' + tableName.replace(/\s+/g, '-'));
+        if(!tableDiv) {
+            tableDiv = document.createElement('div');
+            tableDiv.id = 'table-' + tableName.replace(/\s+/g, '-');
+            tableDiv.className = 'table-cluster';
+            tableDiv.innerHTML = `<span class="table-title">🪑 ${tableName}</span><ul id="list-${tableDiv.id}"></ul>`;
+            document.getElementById('tableMapContainer').appendChild(tableDiv);
+        }
+        
+        const li = document.createElement('li');
+        li.innerHTML = `${name} <span class="tag">${loc}</span>`;
+        document.getElementById('list-' + tableDiv.id).appendChild(li);
+        document.getElementById('gName').value = "";
     }
 
     // CALENDAR GENERATION
     const months = ["December 2025", "January 2026", "February 2026", "March 2026", "April 2026", "May 2026", "June 2026", "July 2026", "August 2026", "September 2026", "October 2026"];
     months.forEach(m => {
-        let h = `<div class="month-title">${m}</div><div class="calendar-grid">`;
+        let h = `<div style="font-family:'Playfair Display'; background:var(--blue); padding:8px; border:2px solid black; border-radius:10px; text-align:center; margin-top:15px;">${m}</div>`;
+        h += `<div class="calendar-header"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>`;
+        h += `<div class="calendar-grid">`;
         for(let i=1; i<=31; i++) h += `<div class="day" ondrop="drop(event)" ondragover="allowDrop(event)"><strong>${i}</strong></div>`;
         document.getElementById('calendarContainer').innerHTML += h + `</div>`;
     });
@@ -129,40 +149,30 @@
     function drag(e) { e.dataTransfer.setData("text", e.target.id); }
     function drop(e) {
         e.preventDefault();
-        const data = e.dataTransfer.getData("text");
-        const node = document.getElementById(data).cloneNode(true);
+        const node = document.getElementById(e.dataTransfer.getData("text")).cloneNode(true);
         node.ondblclick = function() { this.remove(); };
         e.currentTarget.appendChild(node);
     }
 
+    // MONEY LOGIC
+    function addExpense() {
+        const n = document.getElementById('mName').value, a = document.getElementById('mAmt').value, c = document.getElementById('mCur').value;
+        if(n && a) document.getElementById('moneyList').innerHTML += `<div class="item-card"><b>${n}</b>: ${c} ${parseFloat(a).toLocaleString()}</div>`;
+    }
+
     // CREATOR LOGIC
-    function addCreatorNote() {
-        const s = document.getElementById('cStatus').value;
-        const n = document.getElementById('cNote').value;
-        if(!n) return;
-        const card = `<div class="item-card"><b>[${s}]</b><br>${n}</div>`;
-        document.getElementById('creatorList').innerHTML = card + document.getElementById('creatorList').innerHTML;
-        document.getElementById('cNote').value = "";
+    function addCreatorItem() {
+        const n = document.getElementById('cNote').value, r = document.getElementById('cReel').value;
+        let html = `<div class="item-card">`;
+        if(n) html += `<p>${n}</p>`;
+        if(r) html += `<iframe src="${r.split('?')[0]}embed/" width="100%" height="350" frameborder="0"></iframe>`;
+        html += `</div>`;
+        document.getElementById('creatorList').innerHTML = html + document.getElementById('creatorList').innerHTML;
     }
 
-    // MEDIA SAVING LOGIC (For Inspo, Look, Photos)
-    function saveMedia(prefix) {
-        const url = document.getElementById(prefix + 'Url').value;
-        if(!url) return;
-        const container = document.getElementById(prefix + 'List');
-        let content = '';
-
-        if(url.includes('instagram.com')) {
-            const cleanUrl = url.split('?')[0] + "embed/";
-            content = `<div class="media-item"><iframe src="${cleanUrl}" frameborder="0"></iframe></div>`;
-        } else {
-            content = `<div class="media-item"><img src="${url}" onerror="this.src='https://via.placeholder.com/300?text=Link+Saved'"></div>`;
-        }
-        
-        container.innerHTML = content + container.innerHTML;
-        document.getElementById(prefix + 'Url').value = "";
-    }
+    // MISC
+    function addV() { document.getElementById('vList').innerHTML += `<div class="item-card"><b>${document.getElementById('vN').value}</b></div>`; }
+    function addM(p) { document.getElementById(p+'List').innerHTML += `<div class="item-card"><img src="${document.getElementById(p+'U').value}" style="width:100%"></div>`; }
 </script>
-
 </body>
 </html>

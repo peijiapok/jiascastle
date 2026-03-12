@@ -31,22 +31,24 @@
         .nav-card:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0px var(--black); }
         .nav-card img { width: 100%; display: block; }
 
-        /* Pages */
+        /* Creator Scratchpad Styles */
+        .creator-input { width: 100%; box-sizing: border-box; border: 2px solid black; border-radius: 12px; padding: 12px; font-family: inherit; margin-bottom: 10px; }
+        .creator-btn { background: var(--pink); font-weight: bold; padding: 10px; border: 2px solid black; border-radius: 10px; cursor: pointer; width: 100%; }
+        .note-card { background: #fafafa; border: 2px solid black; border-radius: 15px; padding: 15px; margin-top: 15px; position: relative; }
+        .note-tag { display: inline-block; padding: 2px 8px; border: 1px solid black; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-bottom: 8px; background: var(--yellow); }
+        .note-content { font-size: 0.9rem; white-space: pre-wrap; }
+        .delete-note { position: absolute; top: 10px; right: 10px; cursor: pointer; color: #ff6b6b; font-weight: bold; }
+
+        /* General Page/Animation */
         .page { display: none; animation: fadeIn 0.3s ease; }
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Money Tracker Styles */
-        .budget-group { border: 3px solid black; border-radius: 15px; padding: 15px; margin-bottom: 20px; }
-        .korea-bg { background-color: var(--blue); }
-        .kl-bg { background-color: var(--pink); }
-        .budget-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
-
-        /* Calendar Styling */
+        /* Calendar (Minimized for space) */
         #calendarPage { max-height: 75vh; overflow-y: auto; }
-        .month-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; background: var(--yellow); padding: 8px; border: 3px solid black; border-radius: 10px; margin-bottom: 10px; text-align: center; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid black; border-left: 2px solid black; margin-bottom: 30px; }
-        .day { min-height: 60px; border-right: 2px solid black; border-bottom: 2px solid black; padding: 4px; font-size: 0.7rem; background: white; }
+        .month-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; background: var(--blue); padding: 5px; border: 2px solid black; border-radius: 10px; margin-bottom: 8px; text-align: center; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid black; border-left: 1px solid black; margin-bottom: 20px; }
+        .day { min-height: 50px; border-right: 1px solid black; border-bottom: 1px solid black; padding: 4px; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -75,43 +77,57 @@
         </div>
     </div>
 
-    <div id="calendarPage" class="page">
-        <div id="calendarContainer"></div>
+    <div id="creatorPage" class="page">
+        <select id="contentStatus" class="creator-input">
+            <option value="IDEA">💡 New Idea</option>
+            <option value="FILMING">🎬 Currently Filming</option>
+            <option value="EDITING">✂️ Editing</option>
+            <option value="POSTED">📱 Published</option>
+        </select>
+        <textarea id="creatorNote" class="creator-input" rows="4" placeholder="Script idea, vlog title, or caption..."></textarea>
+        <button class="creator-btn" onclick="addNote()">Save Content Note</button>
+        
+        <div id="notesContainer"></div>
     </div>
 
-    <div id="moneyPage" class="page">
-        <div class="budget-group korea-bg">
-            <h3>🇰🇷 Korea Budget (KRW)</h3>
-            <div class="budget-row"><span>Venue Deposit</span> <span>₩1,500,000</span></div>
-            <div class="budget-row"><span>Gown Rental</span> <span>₩800,000</span></div>
-        </div>
-        <div class="budget-group kl-bg">
-            <h3>🇲🇾 KL Budget (MYR)</h3>
-            <div class="budget-row"><span>Catering</span> <span>RM 5,000</span></div>
-            <div class="budget-row"><span>Photographer</span> <span>RM 2,500</span></div>
-        </div>
-    </div>
+    <div id="calendarPage" class="page"><div id="calendarContainer"></div></div>
 
+    <div id="moneyPage" class="page"><h3>Money Tracker</h3></div>
     <div id="guestsPage" class="page"><h3>Guest List</h3></div>
-    <div id="inspoPage" class="page"><h3>Mood Board</h3></div>
-    <div id="lookPage" class="page"><h3>Gowns & Makeup</h3></div>
-    <div id="vendorsPage" class="page"><h3>Vendor Directory</h3></div>
-    <div id="creatorPage" class="page"><h3>Content Ideas</h3></div>
-    <div id="photosPage" class="page"><h3>Photo Gallery</h3></div>
+    <div id="inspoPage" class="page"><h3>Inspo Moodboard</h3></div>
+    <div id="lookPage" class="page"><h3>The Look</h3></div>
+    <div id="vendorsPage" class="page"><h3>Vendors</h3></div>
+    <div id="photosPage" class="page"><h3>Photos</h3></div>
 </div>
 
 <script>
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(pageId + 'Page').classList.add('active-page');
-        
         const isHome = pageId === 'home';
         document.getElementById('backNav').style.display = isHome ? 'none' : 'block';
         document.getElementById('mainHeader').style.display = isHome ? 'block' : 'none';
         window.scrollTo(0,0);
     }
 
-    // Calendar Generation: Dec 2025 - Oct 2026
+    // Creator Note Logic
+    function addNote() {
+        const text = document.getElementById('creatorNote').value;
+        const status = document.getElementById('contentStatus').value;
+        if (!text) return;
+
+        const note = document.createElement('div');
+        note.className = 'note-card';
+        note.innerHTML = `
+            <span class="delete-note" onclick="this.parentElement.remove()">×</span>
+            <div class="note-tag">${status}</div>
+            <div class="note-content">${text}</div>
+        `;
+        document.getElementById('notesContainer').prepend(note);
+        document.getElementById('creatorNote').value = "";
+    }
+
+    // Calendar Generation
     const months = [
         { name: "December 2025", days: 31 }, { name: "January 2026", days: 31 },
         { name: "February 2026", days: 28 }, { name: "March 2026", days: 31 },
@@ -120,7 +136,6 @@
         { name: "August 2026", days: 31 }, { name: "September 2026", days: 30 },
         { name: "October 2026", days: 31 }
     ];
-
     const container = document.getElementById('calendarContainer');
     months.forEach(m => {
         let html = `<div class="month-title">${m.name}</div><div class="calendar-grid">`;

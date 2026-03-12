@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jia's Castle | Wedding Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Jia's Castle</h1>
+            <p class="subtitle">Our Journey to I Do</p>
+        </header>
+
+        <section class="card countdown-card">
+            <div class="icon-placeholder" id="countdown-icon">
+                <span>⏳</span> 
+            </div>
+            <div id="countdown">
+                <span id="days">00</span><small>days</small>
+                <span id="hours">00</span><small>hrs</small>
+            </div>
+            <p>Until the Big Day</p>
+        </section>
+
+        <section class="card checklist-card">
+            <div class="card-header">
+                <div class="icon-small">📝</div>
+                <h2>To-Do List</h2>
+            </div>
+            <ul class="checklist">
+                <li><input type="checkbox"> Finalize Guest List</li>
+                <li><input type="checkbox"> Book Photographer</li>
+                <li><input type="checkbox"> Pick Pastel Palette</li>
+            </ul>
+        </section>
+
+        <section class="card calendar-card">
+            <div class="card-header">
+                <div class="icon-small">📅</div>
+                <h2>Important Dates</h2>
+            </div>
+            <div class="date-item">
+                <strong>March 28</strong> — Dress Fitting
+            </div>
+            <div class="date-item">
+                <strong>April 15</strong> — Food Tasting
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Set your wedding date here!
+        const weddingDate = new Date("Oct 24, 2026 00:00:00").getTime();
+
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        }, 1000);
+    </script>
+</body>
+</html>

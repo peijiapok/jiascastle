@@ -130,92 +130,109 @@
 </div>
 
 <script>
-    function showPage(pId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(pId + 'Page').classList.add('active-page');
-        document.getElementById('backNav').style.display = pId==='home' ? 'none' : 'block';
-        document.getElementById('mainHeader').style.display = pId==='home' ? 'block' : 'none';
-    }
+// --- INITIALIZATION ---
+let selectedPillColor = 'white';
+let totalSpent = 0;
 
-    // CALENDAR
-    const months = ["December 2025", "January 2026", "February 2026", "March 2026", "April 2026", "May 2026", "June 2026", "July 2026", "August 2026", "September 2026", "October 2026"];
-    months.forEach(m => {
-        let h = `<div style="background:var(--blue); padding:5px; border:2px solid black; border-radius:10px; text-align:center; margin-top:15px; font-weight:bold;">${m}</div>`;
-        h += `<div style="display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:0.5rem; font-weight:bold; margin:5px 0;"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div><div class="calendar-grid">`;
-        for(let i=1; i<=31; i++) h += `<div class="day" ondrop="drop(event)" ondragover="allowDrop(event)"><strong>${i}</strong></div>`;
-        document.getElementById('calendarContainer').innerHTML += h + `</div>`;
-    });
-    function allowDrop(e) { e.preventDefault(); }
-    function drag(e) { e.dataTransfer.setData("text", e.target.id); }
-    function drop(e) {
-        e.preventDefault();
-        const node = document.getElementById(e.dataTransfer.getData("text")).cloneNode(true);
-        node.ondblclick = function() { this.remove(); };
-        e.currentTarget.appendChild(node);
-    }
+// Load everything when the page opens
+window.onload = function() {
+    loadAllData();
+    updateBudget(); // Initialize Money Tracker
+};
 
-    // GUESTS
-    function toggleGuestFields() {
-        const l = document.getElementById('gLoc').value;
-        document.getElementById('seoulFields').style.display = l==='Seoul' ? 'block' : 'none';
-        document.getElementById('klFields').style.display = l==='KL' ? 'block' : 'none';
-    }
-    function addGuest() {
-        const n = document.getElementById('gName').value, l = document.getElementById('gLoc').value;
-        const extra = l==='Seoul' ? (document.getElementById('gBus').checked ? " (🚌 Bus Needed)" : "") : " (🪑 Table: "+document.getElementById('gTable').value+")";
-        document.getElementById('guestDisplay').innerHTML += `<div class="item-card"><b>${n}</b> <span class="tag">${l}</span> ${extra}</div>`;
-    }
-
-    // CREATOR
-    function addTask() {
-        const t = document.getElementById('vTitle').value, s = document.getElementById('vStatus').value;
-        document.getElementById('creatorFeed').innerHTML += `<div class="item-card"><span class="tag">${s}</span> ${t}</div>`;
-    }
-    function addInspo() {
-        const r = document.getElementById('vReel').value;
-        document.getElementById('creatorFeed').innerHTML += `<div class="item-card"><iframe src="${r.split('?')[0]}embed/" width="100%" height="300" frameborder="0"></iframe></div>`;
-    }
-
-    // MONEY
-    let total = 0;
-    function addExp() {
-        const n = document.getElementById('eN').value, a = parseFloat(document.getElementById('eA').value);
-        total += a; document.getElementById('eList').innerHTML += `<div class="item-card"><b>${n}</b>: ${a.toLocaleString()}</div>`;
-        updateBudget();
-    }
-    function updateBudget() {
-        const b = parseFloat(document.getElementById('budgetIn').value) || 0;
-        document.getElementById('budgetBal').innerText = (b - total).toLocaleString();
-    }
-    let selectedPillColor = 'white'; // Default color
-
-function selectColor(color) {
-    selectedPillColor = color;
-    // Visually show the selected color in the input box
-    document.getElementById('newPillText').style.border = '3px solid ' + color;
+function showPage(pId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+    document.getElementById(pId + 'Page').classList.add('active-page');
+    document.getElementById('backNav').style.display = pId==='home' ? 'none' : 'block';
+    document.getElementById('mainHeader').style.display = pId==='home' ? 'block' : 'none';
+    window.scrollTo(0,0);
 }
 
+// --- SAVING LOGIC (The Secret Sauce) ---
+function saveAllData() {
+    const data = {
+        calendar: document.getElementById('calendarContainer').innerHTML,
+        toolbox: document.querySelector('.toolbox').innerHTML,
+        money: document.getElementById('moneyList').innerHTML,
+        guests: document.getElementById('guestDisplay').innerHTML,
+        totalSpent: totalSpent
+    };
+    localStorage.setItem('jiasCastleData', JSON.stringify(data));
+}
+
+function loadAllData() {
+    const saved = localStorage.getItem('jiasCastleData');
+    if (saved) {
+        const data = JSON.parse(saved);
+        if (data.calendar) document.getElementById('calendarContainer').innerHTML = data.calendar;
+        if (data.toolbox) document.querySelector('.toolbox').innerHTML = data.toolbox;
+        if (data.money) document.getElementById('moneyList').innerHTML = data.money;
+        if (data.guests) document.getElementById('guestDisplay').innerHTML = data.guests;
+        if (data.totalSpent) totalSpent = data.totalSpent;
+        
+        // Re-attach double-click to delete for all loaded pills
+        document.querySelectorAll('.pill').forEach(pill => {
+            pill.ondblclick = function() { this.remove(); saveAllData(); };
+            pill.ondragstart = drag;
+        });
+    }
+}
+
+// --- CALENDAR & PILLS ---
 function createNewPill() {
     const text = document.getElementById('newPillText').value;
     if (!text) return;
-
     const newPill = document.createElement('div');
     newPill.className = 'pill';
     newPill.style.backgroundColor = selectedPillColor;
     newPill.draggable = true;
-    newPill.id = 'custom-' + Date.now(); // Unique ID
+    newPill.id = 'custom-' + Date.now();
     newPill.innerText = text;
-    
-    // Attach the drag event
     newPill.ondragstart = drag;
-
-    // Add it to the top of your existing toolbox
-    // Ensure your toolbox has id="pillToolbox" or change the line below to match your toolbox class/id
-    document.querySelector('.toolbox').prepend(newPill);
+    newPill.ondblclick = function() { this.remove(); saveAllData(); }; // Delete on double click
     
-    // Reset input
+    document.querySelector('.toolbox').prepend(newPill);
     document.getElementById('newPillText').value = "";
-    document.getElementById('newPillText').style.border = '2px solid black';
+    saveAllData();
+}
+
+function drop(e) {
+    e.preventDefault();
+    const data = e.dataTransfer.setData ? e.dataTransfer.getData("text") : e.target.id;
+    const original = document.getElementById(data);
+    if (!original) return;
+    
+    const node = original.cloneNode(true);
+    node.id = "dropped-" + Math.random();
+    node.ondblclick = function() { this.remove(); saveAllData(); }; // Delete from calendar
+    e.currentTarget.appendChild(node);
+    saveAllData();
+}
+
+// --- MONEY TRACKER LOGIC ---
+function addExpense() {
+    const n = document.getElementById('eN').value;
+    const a = parseFloat(document.getElementById('eA').value);
+    if(!n || isNaN(a)) return;
+    
+    totalSpent += a;
+    const item = `<div class="item-card" ondblclick="this.remove(); updateSpentAfterDelete(${a});">
+                    <b>${n}</b>: ${a.toLocaleString()} <small>(Double click to delete)</small>
+                  </div>`;
+    document.getElementById('eList').innerHTML += item;
+    updateBudget();
+    saveAllData();
+}
+
+function updateSpentAfterDelete(amt) {
+    totalSpent -= amt;
+    updateBudget();
+    saveAllData();
+}
+
+function updateBudget() {
+    const b = parseFloat(document.getElementById('budgetIn').value) || 0;
+    document.getElementById('budgetBal').innerText = (b - totalSpent).toLocaleString();
 }
 </script>
 </body>
